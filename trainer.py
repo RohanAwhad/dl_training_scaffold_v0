@@ -14,6 +14,9 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.utils.data import DataLoader, Dataset
 
+torch.set_float32_matmul_precision("high")
+#torch.backends.cudnn.benchmark = True
+
 # === Logger Classes === #
 class Logger(ABC):
     @abstractmethod
@@ -72,6 +75,8 @@ def load_dataset(dataset_path: str, shard_size: int) -> Tuple[Dataset, Dataset]:
     train_dataset, val_dataset = None, None  # Placeholder
     return train_dataset, val_dataset
 
+
+@torch.no_grad()
 def evaluate(model: nn.Module, val_loader: DataLoader, step: int, logger: Logger) -> None:
     """Placeholder for evaluation logic."""
     model.eval()
@@ -119,7 +124,7 @@ def main():
 
     # Main training loop
     step = 0
-    while step < config['num_steps']:
+    while step < config['num_steps']:  # this could also just be while True
         for batch in train_loader:
             step += 1
 
